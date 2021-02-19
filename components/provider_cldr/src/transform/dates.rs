@@ -412,6 +412,7 @@ pub(self) mod cldr_json {
     pub struct Dates {
         pub calendars: Calendars,
     }
+
     #[derive(PartialEq, Debug, Deserialize)]
     pub struct LangDates {
         pub dates: Dates,

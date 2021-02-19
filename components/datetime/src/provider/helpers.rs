@@ -42,6 +42,11 @@ pub trait DateTimeDates {
         hour: date::IsoHour,
         is_top_of_hour: bool,
     ) -> &Cow<str>;
+    fn get_symbol_for_time_zone(
+        &self,
+        zone: fields::Zone,
+        length: fields::FieldLength,
+    ) -> &Cow<str>;
 }
 
 impl DateTimeDates for provider::gregory::DatesV1 {
@@ -199,5 +204,14 @@ impl DateTimeDates for provider::gregory::DatesV1 {
             (_, hour, _) if hour < 12 => &symbols.am,
             _ => &symbols.pm,
         }
+    }
+
+    fn get_symbol_for_time_zone(
+        &self,
+        _zone: fields::Zone,
+        _length: fields::FieldLength,
+    ) -> &Cow<str> {
+        let widths = &self.symbols.day_periods.format.abbreviated;
+        &widths.pm
     }
 }

@@ -20,7 +20,8 @@
               "bbb",
               "bbbb",
               "bbbbb",
-              "bbbbbb"
+              "bbbbbb",
+              "OOOO"
             ],
             "expected": "م"
           }

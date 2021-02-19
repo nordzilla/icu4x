@@ -239,6 +239,10 @@ where
             );
             w.write_str(symbol)?
         }
+        FieldSymbol::Zone(zone) => {
+            let symbol = data.get_symbol_for_time_zone(zone, field.length);
+            w.write_str(symbol)?
+        }
     };
     Ok(())
 }

@@ -18,6 +18,7 @@ pub enum FieldSymbol {
     Hour(Hour),
     Minute,
     Second(Second),
+    Zone(Zone),
 }
 
 impl TryFrom<u8> for FieldSymbol {
@@ -32,7 +33,8 @@ impl TryFrom<u8> for FieldSymbol {
                 .or_else(|_| Weekday::try_from(b).map(Self::Weekday))
                 .or_else(|_| DayPeriod::try_from(b).map(Self::DayPeriod))
                 .or_else(|_| Hour::try_from(b).map(Self::Hour))
-                .or_else(|_| Second::try_from(b).map(Self::Second)),
+                .or_else(|_| Second::try_from(b).map(Self::Second))
+                .or_else(|_| Zone::try_from(b).map(Self::Zone)),
         }
     }
 }
@@ -207,5 +209,38 @@ impl TryFrom<u8> for DayPeriod {
 impl From<DayPeriod> for FieldSymbol {
     fn from(input: DayPeriod) -> Self {
         Self::DayPeriod(input)
+    }
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum Zone {
+    LowerZ,
+    UpperZ,
+    UpperO,
+    LowerV,
+    UpperV,
+    UpperX,
+    LowerX,
+}
+
+impl TryFrom<u8> for Zone {
+    type Error = SymbolError;
+    fn try_from(b: u8) -> Result<Self, Self::Error> {
+        match b {
+            b'Z' => Ok(Self::UpperZ),
+            b'z' => Ok(Self::LowerZ),
+            b'O' => Ok(Self::UpperO),
+            b'V' => Ok(Self::UpperV),
+            b'v' => Ok(Self::LowerV),
+            b'X' => Ok(Self::UpperX),
+            b'x' => Ok(Self::LowerX),
+            b => Err(SymbolError::Unknown(b)),
+        }
+    }
+}
+
+impl From<Zone> for FieldSymbol {
+    fn from(input: Zone) -> Self {
+        Self::Zone(input)
     }
 }

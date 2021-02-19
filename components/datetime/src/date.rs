@@ -75,10 +75,18 @@ pub trait IsoTimeInput {
     fn fraction(&self) -> Option<FractionalSecond>;
 }
 
+pub trait TimeZoneInput {
+    fn gmt_offset(&self) -> Option<isize>;
+
+    fn metazone(&self) -> Option<String>;
+}
+
 /// A combination of a formattable calendar date and ISO time.
 pub trait DateTimeInput: DateInput + IsoTimeInput {}
+pub trait ZonedDateTimeInput: DateTimeInput + TimeZoneInput {}
 
 impl<T> DateTimeInput for T where T: DateInput + IsoTimeInput {}
+impl<T> ZonedDateTimeInput for T where T: DateTimeInput + TimeZoneInput {}
 
 /// A formattable calendar date and ISO time that takes the locale into account.
 pub trait LocalizedDateTimeInput<T: DateTimeInput> {

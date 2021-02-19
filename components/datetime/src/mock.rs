@@ -182,3 +182,120 @@ impl IsoTimeInput for MockDateTime {
         None
     }
 }
+
+#[derive(Debug, Default)]
+pub struct MockZonedDateTime {
+    pub date_time: MockDateTime,
+
+    pub gmt_offset: isize,
+
+    pub metazone: String,
+}
+
+impl MockZonedDateTime {
+    /// Creates a new `MockZonedDateTime` from a list of already validated date/time parameters.
+    pub const fn new(date_time: MockDateTime, gmt_offset: isize, metazone: String) -> Self {
+        Self {
+            date_time,
+            gmt_offset,
+            metazone,
+        }
+    }
+
+    /// Constructor for the `MockZonedDateTime`.
+    pub fn try_new(
+        date_time: MockDateTime,
+        gmt_offset: isize,
+        metazone: String,
+    ) -> Result<Self, DateTimeError> {
+        Ok(Self {
+            date_time,
+            gmt_offset,
+            metazone,
+        })
+    }
+}
+
+impl FromStr for MockZonedDateTime {
+    type Err = DateTimeError;
+
+    /// Parse a `MockZonedDateTime` from a string.
+    ///
+    /// This utility is for easily creating dates, not a complete robust solution. The
+    /// string must take a specific form of the ISO 8601 format: `YYYY-MM-DDThh:mm:ss`.
+    ///
+    /// ```
+    /// use icu_datetime::mock::MockZonedDateTime;
+    ///
+    /// let date: MockZonedDateTime = "2020-10-14T13:21:00".parse()
+    ///     .expect("Failed to parse a date time.");
+    /// ```
+    fn from_str(input: &str) -> Result<Self, Self::Err> {
+        let year: i32 = input[0..4].parse()?;
+        let month: u32 = input[5..7].parse()?;
+        let day: u32 = input[8..10].parse()?;
+        let hour: IsoHour = input[11..13].parse()?;
+        let minute: IsoMinute = input[14..16].parse()?;
+        let second: IsoSecond = input[17..19].parse()?;
+        Ok(Self {
+            date_time: MockDateTime {
+                year,
+                month: month - 1,
+                day: day - 1,
+                hour,
+                minute,
+                second,
+            },
+            gmt_offset: 0,
+            metazone: String::from("metazone"),
+        })
+    }
+}
+
+impl DateInput for MockZonedDateTime {
+    fn year(&self) -> Option<Year> {
+        Some(arithmetic::iso_year_to_gregorian(self.date_time.year))
+    }
+
+    fn month(&self) -> Option<Month> {
+        Some(Month {
+            number: self.date_time.month + 1,
+            // TODO(#486): Implement month codes
+            code: MonthCode(tinystr8!("TODO")),
+        })
+    }
+
+    fn day_of_month(&self) -> Option<DayOfMonth> {
+        Some(DayOfMonth(self.date_time.day + 1))
+    }
+
+    fn iso_weekday(&self) -> Option<IsoWeekday> {
+        Some(arithmetic::iso_date_to_weekday(
+            self.date_time.year,
+            self.date_time.month as usize,
+            self.date_time.day as usize,
+        ))
+    }
+
+    fn day_of_year_info(&self) -> Option<DayOfYearInfo> {
+        unimplemented!()
+    }
+}
+
+impl IsoTimeInput for MockZonedDateTime {
+    fn hour(&self) -> Option<IsoHour> {
+        Some(self.date_time.hour)
+    }
+
+    fn minute(&self) -> Option<IsoMinute> {
+        Some(self.date_time.minute)
+    }
+
+    fn second(&self) -> Option<IsoSecond> {
+        Some(self.date_time.second)
+    }
+
+    fn fraction(&self) -> Option<FractionalSecond> {
+        None
+    }
+}

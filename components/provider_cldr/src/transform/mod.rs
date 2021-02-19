@@ -4,6 +4,7 @@
 mod dates;
 mod likelysubtags;
 mod plurals;
+mod timezones;
 
 pub use dates::DatesProvider;
 pub use likelysubtags::LikelySubtagsProvider;
@@ -14,12 +15,15 @@ use crate::CldrPaths;
 use icu_provider::erased::*;
 use icu_provider::prelude::*;
 
+use self::timezones::TimeZonesProvider;
+
 /// Returns a list of all ResourceKeys that this provider can produce.
 pub fn get_all_resc_keys() -> Vec<ResourceKey> {
     let mut result: Vec<ResourceKey> = vec![];
     result.extend(&dates::ALL_KEYS);
     result.extend(&likelysubtags::ALL_KEYS);
     result.extend(&plurals::ALL_KEYS);
+    result.extend(&timezones::ALL_KEYS);
     result
 }
 
@@ -29,6 +33,7 @@ pub struct CldrJsonDataProvider<'a, 'd> {
     dates: LazyCldrProvider<DatesProvider<'d>>,
     likelysubtags: LazyCldrProvider<LikelySubtagsProvider<'d>>,
     plurals: LazyCldrProvider<PluralsProvider<'d>>,
+    timezones: LazyCldrProvider<TimeZonesProvider<'d>>,
 }
 
 impl<'a, 'd> CldrJsonDataProvider<'a, 'd> {
@@ -38,6 +43,7 @@ impl<'a, 'd> CldrJsonDataProvider<'a, 'd> {
             dates: Default::default(),
             likelysubtags: Default::default(),
             plurals: Default::default(),
+            timezones: Default::default(),
         }
     }
 }
@@ -58,6 +64,9 @@ impl<'a, 'd> ErasedDataProvider<'d> for CldrJsonDataProvider<'a, 'd> {
             return Ok(result);
         }
         if let Some(result) = self.plurals.try_load(req, receiver, self.cldr_paths)? {
+            return Ok(result);
+        }
+        if let Some(result) = self.timezones.try_load(req, receiver, self.cldr_paths)? {
             return Ok(result);
         }
         Err(DataError::UnsupportedResourceKey(req.resource_path.key))
@@ -83,6 +92,12 @@ impl<'a, 'd> IterableDataProvider<'d> for CldrJsonDataProvider<'a, 'd> {
         }
         if let Some(resp) = self
             .plurals
+            .try_supported_options(resc_key, self.cldr_paths)?
+        {
+            return Ok(resp);
+        }
+        if let Some(resp) = self
+            .timezones
             .try_supported_options(resc_key, self.cldr_paths)?
         {
             return Ok(resp);

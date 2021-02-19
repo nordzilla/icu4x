@@ -900,6 +900,7 @@ dependencies = [
  "icu_plurals",
  "icu_provider",
  "json",
+ "litemap",
  "log",
  "mktemp",
  "reqwest",

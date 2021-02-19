@@ -25,6 +25,7 @@ pub enum ResourceCategory {
     LikelySubtags,
     Plurals,
     Dates,
+    TimeZones,
     Uniset,
     PrivateUse(TinyStr4),
 }
@@ -37,6 +38,7 @@ impl ResourceCategory {
             Self::LikelySubtags => Cow::Borrowed("likelysubtags"),
             Self::Plurals => Cow::Borrowed("plurals"),
             Self::Dates => Cow::Borrowed("dates"),
+            Self::TimeZones => Cow::Borrowed("timezones"),
             Self::Uniset => Cow::Borrowed("uniset"),
             Self::PrivateUse(id) => {
                 let mut result = String::from("x-");
@@ -104,8 +106,8 @@ macro_rules! resource_key {
     (plurals, $sub_category:literal, $version:tt) => {
         $crate::resource_key!($crate::ResourceCategory::Plurals, $sub_category, $version)
     };
-    (dates, $sub_category:literal, $version:tt) => {
-        $crate::resource_key!($crate::ResourceCategory::Dates, $sub_category, $version)
+    (timezones, $sub_category:literal, $version:tt) => {
+        $crate::resource_key!($crate::ResourceCategory::TimeZones, $sub_category, $version)
     };
     (uniset, $sub_category:literal, $version:tt) => {
         $crate::resource_key!($crate::ResourceCategory::Uniset, $sub_category, $version)
