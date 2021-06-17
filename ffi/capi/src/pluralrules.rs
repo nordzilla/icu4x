@@ -6,6 +6,7 @@ use icu_locid::Locale as ICULocale;
 use icu_plurals::{PluralCategory, PluralOperands, PluralRuleType, PluralRules};
 
 use crate::provider::ICU4XDataProvider;
+use crate::fixed_decimal::ICU4XFixedDecimal;
 use std::ptr;
 use std::slice;
 use std::str::{self, FromStr};
@@ -99,6 +100,15 @@ pub extern "C" fn icu4x_plural_rules_select(
     op: &ICU4XPluralOperands,
 ) -> ICU4XPluralCategory {
     pr.select(*op).into()
+}
+
+#[no_mangle]
+/// FFI version of [`PluralRules::select()`]. See its docs for more details.
+pub extern "C" fn icu4x_plural_rules_fixed_decimal_select(
+    pr: &ICU4XPluralRules,
+    op: &ICU4XFixedDecimal,
+) -> ICU4XPluralCategory {
+    pr.select(op).into()
 }
 
 #[no_mangle]

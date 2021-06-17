@@ -8,8 +8,10 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include "fixed_decimal.h"
 #include "provider.h"
 #include "locale.h"
+#include "decimal.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,6 +65,7 @@ typedef struct {
 ICU4XCreatePluralRulesResult icu4x_plural_rules_create(const ICU4XLocale* locale, const ICU4XDataProvider* provider, ICU4XPluralRuleType ty);
 ICU4XCreatePluralOperandsResult icu4x_plural_operands_create(const char* number, size_t len);
 ICU4XPluralCategory icu4x_plural_rules_select(const ICU4XPluralRules* rules, const ICU4XPluralOperands* op);
+ICU4XPluralCategory icu4x_plural_rules_fixed_decimal_select(const ICU4XPluralRules* rules, const ICU4XFixedDecimal* op);
 ICU4XPluralCategories icu4x_plural_rules_categories(const ICU4XPluralRules* rules);
 void icu4x_plural_rules_destroy(ICU4XPluralRules* rules);
 

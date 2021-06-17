@@ -3,6 +3,7 @@
 // (online at: https://github.com/unicode-org/icu4x/blob/main/LICENSE ).
 
 #include "../../include/pluralrules.h"
+#include "../../include/fixed_decimal.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -47,6 +48,11 @@ int main() {
 
     printf("Plural Category %d (should be %d)\n", (int)cat2, (int)ICU4XPluralCategory_Many);
 
+    ICU4XFixedDecimal* decimal = icu4x_fixed_decimal_create(2);
+    ICU4XPluralCategory cat3 = icu4x_plural_rules_fixed_decimal_select(rules, decimal);
+
+    printf("Plural Category %d (should be %d)\n", (int)cat3, (int)ICU4XPluralCategory_Two);
+
     icu4x_plural_rules_destroy(rules);
     icu4x_data_provider_destroy(provider);
     icu4x_locale_destroy(locale);
@@ -60,6 +66,7 @@ int main() {
 
     if (cat1 != ICU4XPluralCategory_Few)  { return 1; }
     if (cat2 != ICU4XPluralCategory_Many) { return 1; }
+    if (cat3 != ICU4XPluralCategory_Two)  { return 1; }
 
     return 0;
 }
