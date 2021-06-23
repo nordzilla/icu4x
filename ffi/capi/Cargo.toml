@@ -31,6 +31,7 @@ path = "src/lib.rs"
 
 [dependencies]
 fixed_decimal = { path = "../../utils/fixed_decimal" }
+icu_datetime = { path = "../../components/datetime/" }
 icu_decimal = { path = "../../components/decimal/" }
 icu_locale_canonicalizer = { path = "../../components/locale_canonicalizer" }
 icu_locid = { path = "../../components/locid" }

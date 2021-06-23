@@ -8,12 +8,16 @@
 mod macros;
 
 pub mod custom_writeable;
+pub mod datetime;
+pub mod datetime_format;
 pub mod decimal;
 pub mod fixed_decimal;
 pub mod locale;
 pub mod locale_canonicalizer;
 pub mod pluralrules;
 pub mod provider;
+pub mod time_zone;
+pub mod zoned_datetime;
 
 #[cfg(target_arch = "wasm32")]
 mod wasm_glue;

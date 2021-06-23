@@ -5,6 +5,7 @@
 macro_rules! c_enum {
     ($(#[$docs:meta])* pub c_enum $cname:ident is $rustname:ident { $($variant:ident,)+ } ) => {
         #[repr(C)]
+        #[derive(Clone, Copy)]
         $(#[$docs])*
         pub enum $cname {
             $($variant,)+
@@ -28,6 +29,7 @@ macro_rules! c_enum {
     };
     ($(#[$docs:meta])* pub c_enum $cname:ident is #[non_exhaustive] $rustname:ident { $($variant:ident,)+ } ) => {
         #[repr(C)]
+        #[derive(Clone, Copy)]
         $(#[$docs])*
         pub enum $cname {
             $($variant,)+

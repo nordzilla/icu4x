@@ -853,6 +853,7 @@ name = "icu_capi"
 version = "0.1.0"
 dependencies = [
  "fixed_decimal",
+ "icu_datetime",
  "icu_decimal",
  "icu_locale_canonicalizer",
  "icu_locid",

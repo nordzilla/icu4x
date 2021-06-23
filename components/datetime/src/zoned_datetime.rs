@@ -61,12 +61,12 @@ use crate::{
 ///
 /// let value = zdtf.format_to_string(&zoned_datetime);
 /// ```
-pub struct ZonedDateTimeFormat<'d> {
-    pub(super) datetime_format: DateTimeFormat<'d>,
-    pub(super) time_zone_format: TimeZoneFormat<'d>,
+pub struct ZonedDateTimeFormat<'d, 's> {
+    pub(super) datetime_format: DateTimeFormat<'d, 's>,
+    pub(super) time_zone_format: TimeZoneFormat<'d, 's>,
 }
 
-impl<'d> ZonedDateTimeFormat<'d> {
+impl<'d, 's> ZonedDateTimeFormat<'d, 's> {
     /// Constructor that takes a selected [`Locale`], a reference to a [`DataProvider`] for
     /// dates, a [`DataProvider`] for time zones, and a list of [`DateTimeFormatOptions`].
     /// It collects all data necessary to format zoned datetime values into the given locale.
@@ -99,15 +99,15 @@ impl<'d> ZonedDateTimeFormat<'d> {
     ) -> Result<Self, DateTimeFormatError>
     where
         L: Into<Locale>,
-        DP: DataProvider<'d, 'd, provider::gregory::DatePatternsV1Marker>
-            + DataProvider<'d, 'd, provider::gregory::DateSymbolsV1Marker>
+        DP: DataProvider<'d, 's, provider::gregory::DatePatternsV1Marker>
+            + DataProvider<'d, 's, provider::gregory::DateSymbolsV1Marker>
             + ?Sized,
-        ZP: DataProvider<'d, 'd, provider::time_zones::TimeZoneFormatsV1Marker>
-            + DataProvider<'d, 'd, provider::time_zones::ExemplarCitiesV1Marker>
-            + DataProvider<'d, 'd, provider::time_zones::MetaZoneGenericNamesLongV1Marker>
-            + DataProvider<'d, 'd, provider::time_zones::MetaZoneGenericNamesShortV1Marker>
-            + DataProvider<'d, 'd, provider::time_zones::MetaZoneSpecificNamesLongV1Marker>
-            + DataProvider<'d, 'd, provider::time_zones::MetaZoneSpecificNamesShortV1Marker>
+        ZP: DataProvider<'d, 's, provider::time_zones::TimeZoneFormatsV1Marker>
+            + DataProvider<'d, 's, provider::time_zones::ExemplarCitiesV1Marker>
+            + DataProvider<'d, 's, provider::time_zones::MetaZoneGenericNamesLongV1Marker>
+            + DataProvider<'d, 's, provider::time_zones::MetaZoneGenericNamesShortV1Marker>
+            + DataProvider<'d, 's, provider::time_zones::MetaZoneSpecificNamesLongV1Marker>
+            + DataProvider<'d, 's, provider::time_zones::MetaZoneSpecificNamesShortV1Marker>
             + ?Sized,
     {
         let locale = locale.into();
@@ -196,7 +196,7 @@ impl<'d> ZonedDateTimeFormat<'d> {
     /// At the moment, there's little value in using that over one of the other `format` methods,
     /// but [`FormattedZonedDateTime`] will grow with methods for iterating over fields, extracting information
     /// about formatted date and so on.
-    pub fn format<'l: 'd, T>(&'l self, value: &'l T) -> FormattedZonedDateTime<'l, T>
+    pub fn format<'l, T>(&'l self, value: &'l T) -> FormattedZonedDateTime<'l, 's, T>
     where
         T: ZonedDateTimeInput,
     {
