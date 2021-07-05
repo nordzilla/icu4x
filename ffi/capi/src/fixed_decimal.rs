@@ -5,6 +5,7 @@
 use fixed_decimal::FixedDecimal;
 
 use crate::custom_writeable::ICU4XWriteable;
+use ryu::Buffer;
 use std::slice;
 use writeable::Writeable;
 
@@ -53,6 +54,28 @@ pub unsafe extern "C" fn icu4x_fixed_decimal_create_fromstr(
             };
         }
     }
+    ICU4XCreateFixedDecimalResult {
+        fd: std::ptr::null_mut(),
+        success: false,
+    }
+}
+
+#[no_mangle]
+/// FFI version of [`FixedDecimal`]'s constructors. This constructs a [`FixedDecimal`] of the provided
+/// `number`.
+pub extern "C" fn icu4x_fixed_decimal_create_from_double(
+    number: f64,
+) -> ICU4XCreateFixedDecimalResult {
+    let mut buffer = Buffer::new();
+    let as_str = buffer.format(number);
+
+    if let Ok(fd) = as_str.parse::<FixedDecimal>() {
+        return ICU4XCreateFixedDecimalResult {
+            fd: Box::into_raw(Box::new(fd)),
+            success: true,
+        };
+    }
+
     ICU4XCreateFixedDecimalResult {
         fd: std::ptr::null_mut(),
         success: false,

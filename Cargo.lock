@@ -861,6 +861,7 @@ dependencies = [
  "icu_provider_fs",
  "icu_testdata",
  "log",
+ "ryu",
  "tinystr",
  "writeable",
 ]
